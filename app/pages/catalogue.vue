@@ -8,11 +8,10 @@
 <script setup lang="ts">
 import type { Database } from "../types/supabase";
 
-const db = useSupabaseClient<Database>();
+const client = useSupabaseClient<Database>();
 
 const { data: species, pending } = useAsyncData("species", async () => {
-  const { data, error } = await db.from("species").select("*");
-  console.log(data);
+  const { data, error } = await client.from("species").select().limit(50);
 
   return data;
 });
