@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+**/bin
+**/obj
+=======
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
@@ -6,3 +10,4 @@
 /LIMRhino/bin/Debug/net48
 /LIMRhino/.vs/LIMRhino
 /LIMRhino/.vs/ProjectEvaluation
+>>>>>>> origin/main
