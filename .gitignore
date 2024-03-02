@@ -2,6 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/rhino/LIMRhino/obj
-/rhino/LIMRhino/bin/Debug/net48
-/rhino/LIMRhino/.vs/LIMRhino
+/LIMRhino/obj
+/LIMRhino/bin/Debug/net48
+/LIMRhino/.vs/LIMRhino
