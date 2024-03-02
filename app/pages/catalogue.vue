@@ -5,14 +5,17 @@
       class="fixed w-screen h-screen z-10 bg-netrual-500 backdrop-blur-sm"
     ></div>
 
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-2 gap-6 py-6">
       <template v-for="s in species">
         <CatalogueCart
           :species="s"
           @click="selectSpecies(s)"
           class="hover:scale-105 transition-all"
         >
-          <CataloguePill :label="'25 kg co2/yearly'" />
+          <CataloguePill
+            v-if="s[`Oxygen Production (kg/acre/year)`]"
+            :label="s[`Oxygen Production (kg/acre/year)`] + 'kg/acre/year'"
+          />
         </CatalogueCart>
       </template>
     </div>
@@ -33,7 +36,6 @@ const { data: species, pending } = useAsyncData("species", async () => {
 
 async function selectSpecies(species: any) {
   isLoading.value = true;
-  console.log(species);
 
   // const jsonSpecies = JSON.stringify(species);
 

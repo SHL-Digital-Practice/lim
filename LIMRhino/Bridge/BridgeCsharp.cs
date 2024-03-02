@@ -43,7 +43,9 @@ namespace LIMRhino.Bridge
                     var options = new FileObjReadOptions(new FileReadOptions());
                     options.MapYtoZ = true;
                     
-                    FileObj.Read(filePath, RhinoDoc.ActiveDoc, options);
+                    
+                    var obj = FileObj.Read(filePath, RhinoDoc.ActiveDoc, options);
+                   
                     RhinoDoc.ActiveDoc.Views.Redraw();
                     
                     if (!File.Exists(filePath))
