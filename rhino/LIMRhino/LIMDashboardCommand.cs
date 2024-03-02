@@ -7,46 +7,46 @@ using System.Runtime.InteropServices;
 
 namespace LIMRhino
 {
-    [Guid("8DBF9960-A020-46A8-929E-39BD21F0840D")]
-    public class LIMCataloguePanelHost : WpfElementHost
+    [Guid("881DBCEA-4F8E-47E8-B74E-59B8A9651EB7")]
+    public class LIMDashboardPanelHost : WpfElementHost
     {
-        public LIMCataloguePanelHost() : base(new CatalogueView(), null) { }
+        public LIMDashboardPanelHost() : base(new CatalogueView(), null) { }
     }
 
-    public class LIMCatalogueCommand : Command
+    public class LIMDashboardCommand : Command
     {
-        public LIMCatalogueCommand()
+        public LIMDashboardCommand()
         {
             // Rhino only creates one instance of each command class defined in a
             // plug-in, so it is safe to store a refence in a static property.
             Instance = this;
             Panels.RegisterPanel(
                 LIMRhinoPlugin.Instance,
-                typeof(LIMCataloguePanelHost),
-                "LIM Catalogue",
+                typeof(LIMDashboardPanelHost),
+                "LIM Dashboard",
                 System.Drawing.SystemIcons.WinLogo,
                 PanelType.System
             );
         }
 
         ///<summary>The only instance of this command.</summary>
-        public static LIMCatalogueCommand Instance { get; private set; }
+        public static LIMDashboardCommand Instance { get; private set; }
 
         ///<returns>The command name as it appears on the Rhino command line.</returns>
-        public override string EnglishName => "LIMCatalogue";
+        public override string EnglishName => "LIMDashboard";
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            var panelId = typeof(LIMCataloguePanelHost).GUID;
+            var panelId = typeof(LIMDashboardPanelHost).GUID;
 
-            var isPanelVisible = Panels.IsPanelVisible( panelId );
+            var isPanelVisible = Panels.IsPanelVisible(panelId);
 
-            if ( isPanelVisible )
+            if (isPanelVisible)
             {
                 return Result.Success;
             }
 
-            Panels.OpenPanel( panelId );
+            Panels.OpenPanel(panelId);
             return Result.Success;
         }
     }
