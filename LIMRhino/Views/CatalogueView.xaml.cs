@@ -1,6 +1,7 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using System.Reflection;
 using System;
+using LIMRhino.Bridge;
 
 namespace LIMRhino.Views
 {
@@ -23,7 +24,11 @@ namespace LIMRhino.Views
         
             await this.webView.EnsureCoreWebView2Async(environment);
 
-            webView.Source = new Uri("http://www.google.com");
+            var bridge = new BridgeCsharp();
+            
+            // webView.
+            webView.CoreWebView2.AddHostObjectToScript("bridge", bridge);
+            webView.Source = new Uri("http://localhost:3000/catalogue");
         }
     }
 }
