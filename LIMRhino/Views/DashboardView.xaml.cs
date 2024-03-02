@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using Newtonsoft.Json;
 using Rhino;
 using Rhino.DocObjects;
 using Rhino.FileIO;
@@ -26,17 +28,9 @@ namespace LIMRhino.Views
         private void RhinoDoc_AddRhinoObject(object sender, Rhino.DocObjects.RhinoObjectEventArgs e)
         {
             var objects = Rhino.RhinoDoc.ActiveDoc.Objects.GetObjectList(ObjectType.Brep);
-
-            foreach (var obj in objects)
-            {
-                var brep = Brep.TryConvertBrep(obj.Geometry);
-
-                var json = brep.ToJSON(new SerializationOptions());
-                
-                webView.CoreWebView2.PostWebMessageAsJson(json);
-            }
-
-
+            var geometries = objects.Select(x => x.Geometry.ToJSON(new SerializationOptions()));
+            var json = JsonConvert.SerializeObject(geometries);
+            webView.CoreWebView2.PostWebMessageAsJson(json);
         }
 
         public async void InitializeBrowser()
