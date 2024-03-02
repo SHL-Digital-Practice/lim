@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-pink-200 min-h-screen">Dashboard</div>
+  <div class="bg-pink-200 flex items-center min-h-screen h-full justify-center">
+    <div>Hello</div>
+  </div>
 </template>
 
 <script setup lang="ts"></script>
