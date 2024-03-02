@@ -18,7 +18,7 @@ const container = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   window.chrome.webview.addEventListener("message", (event: any) => {
-    console.log(event);
+    console.log(event.data);
   });
   const viewer = new SpeckleViewer(container.value!);
 });
