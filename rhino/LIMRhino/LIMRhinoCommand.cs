@@ -16,6 +16,13 @@ namespace LIMRhino
             // Rhino only creates one instance of each command class defined in a
             // plug-in, so it is safe to store a refence in a static property.
             Instance = this;
+            Panels.RegisterPanel(
+                LIMRhinoPlugin.Instance,
+                typeof(LIMCataloguePanelHost),
+                "LIM Catalogue",
+                System.Drawing.SystemIcons.WinLogo,
+                PanelType.System
+            );
         }
 
         ///<summary>The only instance of this command.</summary>
