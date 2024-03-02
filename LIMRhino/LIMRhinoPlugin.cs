@@ -1,7 +1,7 @@
 ﻿using Rhino;
 using System;
 
-namespace LIM
+namespace LIMRhino
 {
     ///<summary>
     /// <para>Every RhinoCommon .rhp assembly must have one and only one PlugIn-derived
@@ -11,15 +11,15 @@ namespace LIM
     /// attributes in AssemblyInfo.cs (you might need to click "Project" ->
     /// "Show All Files" to see it in the "Solution Explorer" window).</para>
     ///</summary>
-    public class LIMPlugin : Rhino.PlugIns.PlugIn
+    public class LIMRhinoPlugin : Rhino.PlugIns.PlugIn
     {
-        public LIMPlugin()
+        public LIMRhinoPlugin()
         {
             Instance = this;
         }
 
-        ///<summary>Gets the only instance of the LIMPlugin plug-in.</summary>
-        public static LIMPlugin Instance { get; private set; }
+        ///<summary>Gets the only instance of the LIMRhinoPlugin plug-in.</summary>
+        public static LIMRhinoPlugin Instance { get; private set; }
 
         // You can override methods here to change the plug-in behavior on
         // loading and shut down, add options pages to the Rhino _Option command
