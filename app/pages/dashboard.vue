@@ -1,5 +1,5 @@
 <template>
-  <div>Dashboard</div>
+  <div class="bg-pink-200 min-h-screen">Dashboard</div>
 </template>
 
 <script setup lang="ts"></script>
