@@ -1,19 +1,9 @@
-﻿using Microsoft.Web.WebView2.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
+using Rhino;
 
 namespace LIMRhino.Views
 {
@@ -26,6 +16,13 @@ namespace LIMRhino.Views
         {
             InitializeComponent();
             InitializeBrowser();
+
+            RhinoDoc.AddRhinoObject += RhinoDoc_AddRhinoObject;
+        }
+
+        private void RhinoDoc_AddRhinoObject(object sender, Rhino.DocObjects.RhinoObjectEventArgs e)
+        {
+            webView.CoreWebView2.PostWebMessageAsString("hello from rhino");
         }
 
         public async void InitializeBrowser()
@@ -36,7 +33,10 @@ namespace LIMRhino.Views
 
             await this.webView.EnsureCoreWebView2Async(environment);
 
-            webView.Source = new Uri("http://www.google.com");
+            webView.Source = new Uri("http://localhost:3000/dashboard");
+            webView.CoreWebView2.OpenDevToolsWindow();
+
+            webView.CoreWebView2.PostWebMessageAsString("hello from rhino");
         }
     }
 }

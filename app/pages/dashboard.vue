@@ -12,10 +12,14 @@
 
 <script setup lang="ts">
 import { Viewer as SpeckleViewer } from "@speckle/viewer";
+import { onMounted, ref } from "vue";
 
 const container = ref<HTMLElement | null>(null);
 
 onMounted(() => {
+  window.chrome.webview.addEventListener("message", (event: any) => {
+    console.log(event);
+  });
   const viewer = new SpeckleViewer(container.value!);
 });
 </script>

@@ -16,14 +16,14 @@ namespace LIMRhino.Views
         }
 
         public async void InitializeBrowser()
-        { 
+        {
             string userDataFolder = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\browser";
             
             var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder, null);
         
             await this.webView.EnsureCoreWebView2Async(environment);
 
-            webView.Source = new Uri("http://www.google.com");
+            webView.Source = new Uri("http://localhost:3000");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace LIMRhino
     [Guid("881DBCEA-4F8E-47E8-B74E-59B8A9651EB7")]
     public class LIMDashboardPanelHost : WpfElementHost
     {
-        public LIMDashboardPanelHost() : base(new CatalogueView(), null) { }
+        public LIMDashboardPanelHost() : base(new DashboardView(), null) { }
     }
 
     public class LIMDashboardCommand : Command
