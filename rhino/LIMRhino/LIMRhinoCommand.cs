@@ -33,6 +33,16 @@ namespace LIMRhino
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
+            var panelId = typeof(LIMCataloguePanelHost).GUID;
+
+            var isPanelVisible = Panels.IsPanelVisible( panelId );
+
+            if ( isPanelVisible )
+            {
+                return Result.Success;
+            }
+
+            Panels.OpenPanel( panelId );
             return Result.Success;
         }
     }
