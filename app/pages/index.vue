@@ -1,8 +1,7 @@
 <template>
-  <div>Index</div>
+  <div>index</div>
 </template>
 
-<script setup>
-const router = useRouter();
-router.push("/dashboard");
-</script>
+<script setup lang="ts"></script>
+
+<style scoped></style>
