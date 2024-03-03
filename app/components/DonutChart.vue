@@ -110,103 +110,108 @@
 <script setup lang="ts">
 import ApexCharts from "apexcharts";
 import { initFlowbite } from "flowbite";
+import type { Database } from "~/types/supabase";
+import { ColorsHelper } from "~/utils/color-helper";
 
-onMounted(() => {
-  initFlowbite();
+const species = useSpecies();
 
-  const data = [
-    { name: "Acer platanoides", value: 35.1, color: "#1C64F2" },
-    { name: "Acer saccharinum", value: 23.5, color: "#16BDCA" },
-    { name: "Acer rubrum", value: 2.4, color: "#FDBA8C" },
-    { name: "Acer saccharum", value: 5.4, color: "#E74694" },
-  ];
+const chartData = ref<any>([
+  { name: "Acer platanoides", value: 35.1, color: "#1C64F2" },
+  { name: "Acer saccharinum", value: 23.5, color: "#16BDCA" },
+  { name: "Acer rubrum", value: 2.4, color: "#FDBA8C" },
+  { name: "Acer saccharum", value: 5.4, color: "#E74694" },
+]);
 
-  const getChartOptions = () => {
-    return {
-      series: data.map((item) => item.value),
-      colors: data.map((item) => item.color),
-      chart: {
-        height: 320,
-        width: "100%",
-        type: "donut",
-      },
-      stroke: {
-        colors: ["transparent"],
-        lineCap: "",
-      },
-      plotOptions: {
-        pie: {
-          donut: {
-            labels: {
+const formattedData = computed(() => {});
+let chartRef;
+
+const getChartOptions = () => {
+  console.log(chartData.value);
+  return {
+    series: chartData.value.map((item: any) => item.value),
+    colors: ColorsHelper.generateColors(chartData.value.length),
+    chart: {
+      height: 320,
+      width: "100%",
+      type: "donut",
+    },
+    stroke: {
+      colors: ["transparent"],
+      lineCap: "",
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            name: {
               show: true,
-              name: {
-                show: true,
-                fontFamily: "Inter, sans-serif",
-                offsetY: 20,
-              },
-              total: {
-                showAlways: true,
-                show: true,
-                label: "Unique species",
-                fontFamily: "Inter, sans-serif",
-                formatter: function (w: any) {
-                  const sum = w.globals.seriesTotals.reduce(
-                    (a: any, b: any) => {
-                      return a + b;
-                    },
-                    0
-                  );
-                  return "$" + sum + "k";
-                },
-              },
-              value: {
-                show: true,
-                fontFamily: "Inter, sans-serif",
-                offsetY: -20,
-                formatter: function (value: any) {
-                  return value + "k";
-                },
+              fontFamily: "Inter, sans-serif",
+              offsetY: 20,
+            },
+            total: {
+              showAlways: true,
+              show: true,
+              label: "Unique species",
+              fontFamily: "Inter, sans-serif",
+              formatter: function (w: any) {
+                const sum = w.globals.seriesTotals.reduce((a: any, b: any) => {
+                  return a + b;
+                }, 0);
+                return "$" + sum + "k";
               },
             },
-            size: "80%",
+            value: {
+              show: true,
+              fontFamily: "Inter, sans-serif",
+              offsetY: -20,
+              formatter: function (value: any) {
+                return value + "k";
+              },
+            },
           },
+          size: "80%",
         },
       },
-      grid: {
-        padding: {
-          top: -2,
+    },
+    grid: {
+      padding: {
+        top: -2,
+      },
+    },
+    labels: chartData.value.map((item) => item.name),
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: "bottom",
+      fontFamily: "Inter, sans-serif",
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value: any) {
+          return value + "k";
         },
       },
-      labels: data.map((item) => item.name),
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        position: "bottom",
-        fontFamily: "Inter, sans-serif",
-      },
-      yaxis: {
-        labels: {
-          formatter: function (value: any) {
-            return value + "k";
-          },
+    },
+    xaxis: {
+      labels: {
+        formatter: function (value: any) {
+          return value + "k";
         },
       },
-      xaxis: {
-        labels: {
-          formatter: function (value: any) {
-            return value + "k";
-          },
-        },
-        axisTicks: {
-          show: false,
-        },
-        axisBorder: {
-          show: false,
-        },
+      axisTicks: {
+        show: false,
       },
-    };
+      axisBorder: {
+        show: false,
+      },
+    },
   };
+};
+
+function refreshData() {
+  const data = formattedData.value;
 
   if (
     document.getElementById("donut-chart") &&
@@ -217,6 +222,7 @@ onMounted(() => {
       getChartOptions()
     );
     chart.render();
+    chartRef = chart;
 
     // Get all the checkboxes by their class name
     const checkboxes = document.querySelectorAll(
@@ -252,6 +258,41 @@ onMounted(() => {
       );
     });
   }
+}
+
+watch(species, async (newValue) => {
+  console.log("species changed from donut chart", newValue);
+
+  const countMap: Map<string, number> = new Map();
+  species.value.forEach((str) => {
+    countMap.set(str, (countMap.get(str) || 0) + 1);
+  });
+
+  const data = Array.from(countMap).map(async ([name, value]) => {
+    const client = useSupabaseClient<Database>();
+    const { data, error } = await client
+      .from("species")
+      .select("*")
+      .eq("id", name)
+      .single();
+
+    console.log("data from supabase", data, error);
+
+    return { name: data!.common_name, value, color: "#4C51BF" };
+  });
+
+  const result = await Promise.all(data);
+
+  chartData.value = result;
+
+  if (chartRef) {
+    chartRef.updateOptions(getChartOptions());
+  }
+});
+
+onMounted(() => {
+  initFlowbite();
+  refreshData();
 });
 </script>
 
