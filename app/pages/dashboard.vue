@@ -28,29 +28,40 @@ params.showStats = true;
 params.verbose = true;
 
 onMounted(async () => {
-  if (window.chrome.webview) {
-    window.chrome.webview.addEventListener("message", (event: any) => {
-      debugger;
-      loadObjects();
-    });
-  }
-
   viewer = new SpeckleViewer(container.value!, params);
   await viewer.init();
   viewer.createExtension(CameraController);
   viewer.createExtension(SelectionExtension);
-  await loadObjects();
+
+  if (window.chrome.webview) {
+    window.chrome.webview.addEventListener("message", async (event: any) => {
+      const { data } = event;
+      if (data.type == "loadObject") {
+        const { path } = data;
+        const { data: resourceToLoad } = await useFetch("/api/read", {
+          query: { path },
+        });
+        console.log("resourceToLoad", resourceToLoad);
+        if (resourceToLoad.value) loadObjects(resourceToLoad.value);
+      }
+
+      if (data.type == "unloadAll") {
+        await viewer.unloadAll();
+      }
+    });
+  }
 });
 
-async function loadObjects() {
-  const { data, error } = await useFetch("/api/read");
-
-  console.log("data", data.value);
-  console.log("error", error.value);
-
+async function loadObjects(resourceToLoad: string) {
   if (!viewer) return;
 
-  const loader = new ObjLoader(viewer.getWorldTree(), "D20", data.value!);
+  await viewer.unloadAll();
+
+  const loader = new ObjLoader(
+    viewer.getWorldTree(),
+    "rhino_things",
+    resourceToLoad
+  );
 
   await viewer.loadObject(loader, true);
 }

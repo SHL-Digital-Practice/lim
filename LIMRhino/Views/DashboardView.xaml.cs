@@ -17,21 +17,15 @@ namespace LIMRhino.Views
     /// </summary>
     public partial class DashboardView : UserControl
     {
+        int objectsToLoad = 0;
+
         public DashboardView()
         {
             InitializeComponent();
             InitializeBrowser();
-
-            RhinoDoc.AddRhinoObject += RhinoDoc_AddRhinoObject;
+            new DashboardObjectsManager(webView);
         }
 
-        private void RhinoDoc_AddRhinoObject(object sender, Rhino.DocObjects.RhinoObjectEventArgs e)
-        {
-            var objects = Rhino.RhinoDoc.ActiveDoc.Objects.GetObjectList(ObjectType.Brep);
-            var geometries = objects.Select(x => x.Geometry.ToJSON(new SerializationOptions()));
-            var json = JsonConvert.SerializeObject(geometries);
-            webView.CoreWebView2.PostWebMessageAsJson(json);
-        }
 
         public async void InitializeBrowser()
         {
