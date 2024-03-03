@@ -23,7 +23,6 @@ namespace LIMRhino.Views
         {
             InitializeComponent();
             InitializeBrowser();
-            new DashboardObjectsManager(webView);
         }
 
 
@@ -39,6 +38,7 @@ namespace LIMRhino.Views
             webView.CoreWebView2.OpenDevToolsWindow();
 
             webView.CoreWebView2.PostWebMessageAsString("hello from rhino");
+            new DashboardObjectsManager(webView);
         }
     }
 }

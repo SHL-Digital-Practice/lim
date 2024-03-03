@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.1.1",
     "@speckle/viewer": "^2.18.6",
     "apexcharts": "^3.46.0",
     "flowbite": "^2.3.0",
