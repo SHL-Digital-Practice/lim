@@ -1,5 +1,8 @@
 <template>
-  <NuxtPage class="bg-neutral-100" />
+  <div class="bg-neutral-100">
+    <BaseNavbar />
+    <NuxtPage />
+  </div>
 </template>
 
 <script setup lang="ts">
