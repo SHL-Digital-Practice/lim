@@ -5,7 +5,7 @@
       class="fixed w-screen h-screen z-10 bg-netrual-500 backdrop-blur-sm"
     ></div>
 
-    <div class="grid grid-cols-2 gap-6 py-6">
+    <div class="grid grid-cols-2 gap-8 p-6">
       <template v-for="s in species">
         <CatalogueCart
           :species="s"
