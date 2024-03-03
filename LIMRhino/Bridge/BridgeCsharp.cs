@@ -17,12 +17,25 @@ namespace LIMRhino.Bridge
     [ComVisible(true)]
     public class BridgeCsharp
     {
+        
+        public static bool IsLoadingObj = false;
+        public static SpeciesRecord Species = null;
+        
+        public BridgeCsharp()
+        {
+            RhinoDoc.AddRhinoObject += (sender, args) =>
+            {
+                if (!IsLoadingObj) return;
+                    
+                args.TheObject.Attributes.SetUserString("id", Species.Id.ToString());
+                IsLoadingObj = false;
+                
+            };
+        }
+
         public Boolean GetAsset(string url, string jsonSpecies)
         {
-            
-            
             var species = JsonConvert.DeserializeObject<SpeciesRecord>(jsonSpecies);
-            
             DownloadAsset(url, species);
 
             return true;
@@ -30,6 +43,8 @@ namespace LIMRhino.Bridge
         
         static async Task DownloadAsset(string url, SpeciesRecord species)
         {
+            Species = species;
+            
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             string filePath = @"C:\Temp\downloaded_file.obj";
    
@@ -44,9 +59,13 @@ namespace LIMRhino.Bridge
                     options.MapYtoZ = true;
                     
                     
+                    IsLoadingObj = true;
                     var obj = FileObj.Read(filePath, RhinoDoc.ActiveDoc, options);
                    
                     RhinoDoc.ActiveDoc.Views.Redraw();
+                    
+                  
+                    
                     
                     if (!File.Exists(filePath))
                     {
