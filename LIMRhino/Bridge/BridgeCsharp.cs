@@ -17,18 +17,18 @@ namespace LIMRhino.Bridge
     [ComVisible(true)]
     public class BridgeCsharp
     {
-        public Boolean GetAsset(string url)
+        public Boolean GetAsset(string url, string jsonSpecies)
         {
             
             
-            // var asset = JsonConvert.DeserializeObject<SpeciesRecord>(url);
+            var species = JsonConvert.DeserializeObject<SpeciesRecord>(jsonSpecies);
             
-            DownloadAsset(url);
+            DownloadAsset(url, species);
 
             return true;
         }
         
-        static async Task DownloadAsset(string url)
+        static async Task DownloadAsset(string url, SpeciesRecord species)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             string filePath = @"C:\Temp\downloaded_file.obj";

@@ -37,7 +37,7 @@ const { data: species, pending } = useAsyncData("species", async () => {
 async function selectSpecies(species: any) {
   isLoading.value = true;
 
-  // const jsonSpecies = JSON.stringify(species);
+  const jsonSpecies = JSON.stringify(species);
 
   const urlObj = await client.storage
     .from("objs")
@@ -49,7 +49,7 @@ async function selectSpecies(species: any) {
   console.log(url);
 
   //@ts-ignore
-  await chrome.webview.hostObjects.bridge.getAsset(url);
+  await chrome.webview.hostObjects.bridge.getAsset(url, jsonSpecies);
   isLoading.value = false;
 }
 </script>
