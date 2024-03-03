@@ -26,6 +26,16 @@ namespace LIMRhino
             RhinoDoc.AddRhinoObject += HandleAddObject;
             RhinoDoc.BeginOpenDocument += HandleBeginOpenDocument;
             RhinoDoc.UndeleteRhinoObject += HandleUndeleteObject;
+            RhinoDoc.EndOpenDocument += HandleEndOpenDocument;
+
+            LoadInitialState();
+        }
+
+        private void HandleEndOpenDocument(object sender, DocumentOpenEventArgs e)
+        {
+            onTransaction = true;
+            numOfTransactionObjects = e.Document.Objects.Count;
+            EndTransaction();
         }
 
         private void HandleUndeleteObject(object sender, Rhino.DocObjects.RhinoObjectEventArgs e)
@@ -53,7 +63,7 @@ namespace LIMRhino
                 onTransaction = true;
                 transactionObjects = new List<Guid>() { e.ObjectId };
                 numOfTransactionObjects = 1;
-                endTransaction();
+                EndTransaction();
                 return;
             }
 
@@ -61,9 +71,15 @@ namespace LIMRhino
             {
                 numOfTransactionObjects--;
                 return;
-            } else
+            }
+
+            if (RhinoDoc.ActiveDoc.IsInitializing)
             {
-                endTransaction();
+                return;
+            }
+                else
+            {
+                EndTransaction();
                 return;
             }
         }
@@ -74,7 +90,7 @@ namespace LIMRhino
                 onTransaction= true;
                 transactionObjects = new List<Guid>() { e.ObjectId };
                 numOfTransactionObjects = 1;
-                endTransaction();
+                EndTransaction();
             }
         }
 
@@ -99,9 +115,9 @@ namespace LIMRhino
             return; 
         }
 
-        private void endTransaction()
+        private void EndTransaction()
         {
-            if (RhinoDoc.ActiveDoc.Objects.Count > 0)
+            if (RhinoDoc.ActiveDoc.Objects.Count > 0 && numOfTransactionObjects > 0)
             {
                 // Send state to dashboard;
 
@@ -134,6 +150,13 @@ namespace LIMRhino
             numOfTransactionObjects = 0;
             transactionObjects = null;
             onTransaction = false;
+        }
+    
+        private void LoadInitialState() {
+        
+            if (onTransaction == true) { return; }
+            onTransaction = true;
+            EndTransaction();
         }
     }
 }
