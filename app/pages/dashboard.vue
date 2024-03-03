@@ -17,25 +17,27 @@ import DonutChart from "~/components/DonutChart.vue";
 onMounted(async () => {
   if (window.chrome.webview) {
     window.chrome.webview.addEventListener("message", async (event: any) => {
-      const { data } = event;
-      if (data.type == "loadObject") {
-        const { path } = data;
+      const message = JSON.parse(event.data);
+      if (message.type == "loadObject") {
+        const { path } = message;
         const { data: resourceToLoad } = await useFetch("/api/read", {
           query: { path },
         });
         console.log("resourceToLoad", resourceToLoad);
-        if (resourceToLoad.value) loadObjects(resourceToLoad.value);
       }
 
-      if (data.type == "unloadAll") {
-        await viewer.unloadAll();
+      if (message.type == "unloadAll") {
       }
 
-      if (data.type == "speciesData") {
-        console.log(event.data);
+      if (message.type == "speciesData") {
+        console.log("speciesData");
+        const placedInstances = message.data;
+
+        console.log("placedInstances", placedInstances);
       }
 
-      if (data.type == "removeAllSpecies") {
+      if (message.type == "removeAllSpecies") {
+        debugger;
         console.log("removeAllSpecies");
       }
     });

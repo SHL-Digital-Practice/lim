@@ -4,6 +4,7 @@ using Rhino;
 using Rhino.DocObjects;
 using Rhino.FileIO;
 using Rhino.Geometry;
+using Rhino.Render.ChangeQueue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +38,18 @@ namespace LIMRhino
 
         private void HandleIdle(object sender, EventArgs e)
         {
-            // get all the blocks instances in the model
-            var blockInstances = RhinoDoc.ActiveDoc.Objects.GetObjectsByType<InstanceObject>();
-            
             var species = new List<string>();
 
-            foreach (var instance in blockInstances) {
-                string id = instance.Attributes.GetUserString("species_id");
-                species.Add(id);
+            foreach (var obj in RhinoDoc.ActiveDoc.Objects)
+            {
+                if (obj.Geometry.ObjectType == ObjectType.Mesh)
+                {
+                    var val = obj.Attributes.GetUserString("id");
+                    if (val != null)
+                    {
+                        species.Add(val);
+                    }
+                }
             }
 
             if (species.Count > 0)
@@ -61,13 +66,15 @@ namespace LIMRhino
                     return;
                 }
 
-                webView.CoreWebView2.PostWebMessageAsJson(JsonConvert.SerializeObject(payload));
+                // update 
+                webView.CoreWebView2.PostWebMessageAsJson(payload);
                 hash = payload;
             } else
             {
                 var message = new
                 {
                     type = "removeAllSpecies",
+                    data = "none"
                 };
 
                 string payload = JsonConvert.SerializeObject(message);
@@ -77,6 +84,7 @@ namespace LIMRhino
                 }
 
                 if (hash == payload) { return; }
+                // remove species
                 webView.CoreWebView2.PostWebMessageAsJson(payload);
                 hash = payload;
             }
