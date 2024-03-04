@@ -152,13 +152,16 @@ const getChartOptions = () => {
             total: {
               showAlways: true,
               show: true,
-              label: "Unique species",
+              label: "Number of organisms",
               fontFamily: "Inter, sans-serif",
               formatter: function (w: any) {
                 const sum = w.globals.seriesTotals.reduce((a: any, b: any) => {
                   return a + b;
                 }, 0);
-                return "$" + sum + "k";
+                const uniqueSpecies = chartData.value.map(
+                  (item: any) => item.name
+                ).length;
+                return parseInt(sum);
               },
             },
             value: {
@@ -166,7 +169,7 @@ const getChartOptions = () => {
               fontFamily: "Inter, sans-serif",
               offsetY: -20,
               formatter: function (value: any) {
-                return value + "k";
+                return value;
               },
             },
           },
@@ -190,14 +193,14 @@ const getChartOptions = () => {
     yaxis: {
       labels: {
         formatter: function (value: any) {
-          return value + "k";
+          return value;
         },
       },
     },
     xaxis: {
       labels: {
         formatter: function (value: any) {
-          return value + "k";
+          return value;
         },
       },
       axisTicks: {
